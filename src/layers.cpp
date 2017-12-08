@@ -6,7 +6,7 @@ static uint32_t LayerState;
 uint8_t Layer_::highestLayer;
 Key Layer_::liveCompositeKeymap[ROWS][COLS];
 uint8_t Layer_::activeLayers[ROWS][COLS];
-Key(*Layer_::getKey)(uint8_t layer, byte row, byte col) = Layer.getKeyFromPROGMEM;
+Key(*Layer_::getKey)(uint8_t layer, KeyAddr key_addr) = Layer.getKeyFromPROGMEM;
 
 // The total number of defined layers in the firmware sketch keymaps[]
 // array. If the keymap wasn't defined using CREATE_KEYMAP() in the
@@ -65,7 +65,7 @@ static void handleKeymapKeyswitchEvent(Key keymapEntry, uint8_t keyState) {
 }
 
 Key
-Layer_::eventHandler(Key mappedKey, byte row, byte col, uint8_t keyState) {
+Layer_::eventHandler(Key mappedKey, uint8_t keyState) {
   if (mappedKey.flags != (SYNTHETIC | SWITCH_TO_KEYMAP))
     return mappedKey;
 
@@ -78,41 +78,40 @@ Layer_::Layer_(void) {
 }
 
 Key
-Layer_::getKeyFromPROGMEM(uint8_t layer, byte row, byte col) {
+Layer_::getKeyFromPROGMEM(uint8_t layer, KeyAddr key_addr) {
   Key key;
 
-  key.raw = pgm_read_word(&(keymaps[layer][row][col]));
+  key.raw = pgm_read_word(&(keymaps[layer][key_addr]));
 
   return key;
 }
 
 void
-Layer_::updateLiveCompositeKeymap(byte row, byte col) {
-  int8_t layer = activeLayers[row][col];
-  liveCompositeKeymap[row][col] = (*getKey)(layer, row, col);
+Layer_::updateLiveCompositeKeymap(KeyAddr key_addr) {
+  int8_t layer = activeLayers[key_addr];
+  liveCompositeKeymap[key_addr] = (*getKey)(layer, key_addr);
 }
 
 void
 Layer_::updateActiveLayers(void) {
-  memset(activeLayers, DefaultLayer, ROWS * COLS);
-  for (byte row = 0; row < ROWS; row++) {
-    for (byte col = 0; col < COLS; col++) {
-      int8_t layer = highestLayer;
+  memset(activeLayers, DefaultLayer, TOTAL_KEYS);
+  for (KeyAddr key_addr = 0; key_addr < TOTAL_KEYS; key_addr++) {
+    int8_t layer = highestLayer;
 
-      while (layer > DefaultLayer) {
-        if (Layer.isOn(layer)) {
-          Key mappedKey = (*getKey)(layer, row, col);
+    while (layer > DefaultLayer) {
+      if (Layer.isOn(layer)) {
+	Key mappedKey = (*getKey)(layer, key_addr);
 
-          if (mappedKey != Key_Transparent) {
-            activeLayers[row][col] = layer;
-            break;
-          }
-        }
-        layer--;
+	if (mappedKey != Key_Transparent) {
+	  activeLayers[key_addr] = layer;
+	  break;
+	}
       }
+      layer--;
     }
   }
 }
+
 
 void Layer_::updateHighestLayer(void) {
   for (int8_t i = 31; i >= 0; i--) {
