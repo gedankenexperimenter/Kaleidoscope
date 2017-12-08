@@ -7,9 +7,10 @@
 // Macro for defining the keymap. This should be used in the sketch
 // file (*.ino) to define the keymap[] array that holds the user's
 // layers. It also computes the number of layers in that keymap.
-#define KEYMAPS(layers...)				\
-  const Key keymaps[][ROWS][COLS] PROGMEM = { layers };		\
-  uint8_t layer_count = sizeof(keymaps) / sizeof(*keymaps);
+#define KEYMAPS(layers...) {				    \
+  const Key keymaps[][TOTAL_KEYS] PROGMEM = { layers };     \
+  uint8_t layer_count = sizeof(keymaps) / sizeof(*keymaps); \
+}
 
 
 class Layer_ {
@@ -45,15 +46,15 @@ class Layer_ {
    * are curious what the active layer state describes the key as, use
    * `lookupOnActiveLayer`.
    */
-  static Key lookup(byte row, byte col) {
-    return liveCompositeKeymap[row][col];
+  static Key lookup(KeyAddr key_addr) {
+    return liveCompositeKeymap[key_addr];
   }
-  static Key lookupOnActiveLayer(byte row, byte col) {
-    uint8_t layer = activeLayers[row][col];
-    return (*getKey)(layer, row, col);
+  static Key lookupOnActiveLayer(KeyAddr key_addr) {
+    uint8_t layer = activeLayers[key_addr];
+    return (*getKey)(layer, key_addr);
   }
-  static uint8_t lookupActiveLayer(byte row, byte col) {
-    return activeLayers[row][col];
+  static uint8_t lookupActiveLayer(KeyAddr key_addr) {
+    return activeLayers[key_addr];
   }
   static void on(uint8_t layer);
   static void off(uint8_t layer);
@@ -72,21 +73,21 @@ class Layer_ {
 
   static uint32_t getLayerState(void);
 
-  static Key eventHandler(Key mappedKey, byte row, byte col, uint8_t keyState);
+  static Key eventHandler(Key mappedKey, KeyAddr key_addr, uint8_t keyState);
 
-  static Key(*getKey)(uint8_t layer, byte row, byte col);
+  static Key(*getKey)(uint8_t layer, KeyAddr key_addr);
 
-  static Key getKeyFromPROGMEM(uint8_t layer, byte row, byte col);
+  static Key getKeyFromPROGMEM(uint8_t layer, KeyAddr key_addr);
 
-  static void updateLiveCompositeKeymap(byte row, byte col);
+  static void updateLiveCompositeKeymap(KeyAddr key_addr);
   static void updateActiveLayers(void);
 
  private:
   static void updateHighestLayer(void);
 
   static uint8_t highestLayer;
-  static Key liveCompositeKeymap[ROWS][COLS];
-  static uint8_t activeLayers[ROWS][COLS];
+  static Key liveCompositeKeymap[TOTAL_KEYS];
+  static uint8_t activeLayers[TOTAL_KEYS];
 };
 
 extern Layer_ Layer;
