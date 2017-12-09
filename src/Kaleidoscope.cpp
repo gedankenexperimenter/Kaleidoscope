@@ -15,11 +15,11 @@ Kaleidoscope_::setup(void) {
   // A workaround, so that the compiler does not optimize handleKeyswitchEvent out...
   // This is a no-op, but tricks the compiler into not being too helpful
   // TODO(anyone): figure out how to hint the compiler in a more reasonable way
-  handleKeyswitchEvent(Key_NoKey, 255, 255, 0);
+  handleKeyswitchEvent(Key_NoKey, 255, 0);
 
   // Update the keymap cache, so we start with a non-empty state.
   Layer.updateActiveLayers();
-  for (KeyAddr key_addr; key_addr < TOTAL_KEYS; key_addr++) {
+  for (KeyAddr key_addr = 0; key_addr < TOTAL_KEYS; key_addr++) {
     Layer.updateLiveCompositeKeymap(key_addr);
   }
 }

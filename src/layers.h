@@ -7,10 +7,10 @@
 // Macro for defining the keymap. This should be used in the sketch
 // file (*.ino) to define the keymap[] array that holds the user's
 // layers. It also computes the number of layers in that keymap.
-#define KEYMAPS(layers...) {				    \
+#define KEYMAPS(layers...) 				    \
   const Key keymaps[][TOTAL_KEYS] PROGMEM = { layers };     \
   uint8_t layer_count = sizeof(keymaps) / sizeof(*keymaps); \
-}
+
 
 
 class Layer_ {
