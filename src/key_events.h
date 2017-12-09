@@ -5,12 +5,12 @@
 #include "key_defs.h"
 #include "keyswitch_state.h"
 
-extern const Key keymaps[][ROWS][COLS];
+extern const Key keymaps[][TOTAL_KEYS];
 
 
 // Code can use this macro on injected key events to signal that
 // the event isn't tied to a specific physical keyswitch
-#define UNKNOWN_KEYSWITCH_LOCATION 255,255
+#define UNKNOWN_KEYSWITCH_LOCATION TOTAL_KEYS
 
 // sending events to the computer
 /* The event handling starts with the Scanner calling handleKeyswitchEvent() for
@@ -41,5 +41,5 @@ extern const Key keymaps[][ROWS][COLS];
  * currentState may be flagged INJECTED, which signals that the event was
  * injected, and is not a direct result of a keypress, coming from the scanner.
  */
-void handleKeyswitchEvent(Key mappedKey, byte row, byte col, uint8_t keyState);
+void handleKeyswitchEvent(Key mappedKey, KeyAddr key_addr, uint8_t keyState);
 

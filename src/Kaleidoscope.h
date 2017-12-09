@@ -443,7 +443,7 @@ class Kaleidoscope_ {
    * functions will, on the other hand, just append the hooks, and not care about
    * protection.
    */
-  typedef Key(*eventHandlerHook)(Key mappedKey, byte row, byte col, uint8_t keyState);
+  typedef Key(*eventHandlerHook)(Key mappedKey, KeyAddr key_addr, uint8_t keyState);
   static eventHandlerHook eventHandlers[HOOK_MAX];
 
   static void replaceEventHandlerHook(eventHandlerHook oldHook, eventHandlerHook newHook)
