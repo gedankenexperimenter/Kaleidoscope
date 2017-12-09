@@ -4,8 +4,8 @@ static uint8_t DefaultLayer;
 static uint32_t LayerState;
 
 uint8_t Layer_::highestLayer;
-Key Layer_::liveCompositeKeymap[ROWS][COLS];
-uint8_t Layer_::activeLayers[ROWS][COLS];
+Key Layer_::liveCompositeKeymap[TOTAL_KEYS];
+uint8_t Layer_::activeLayers[TOTAL_KEYS];
 Key(*Layer_::getKey)(uint8_t layer, KeyAddr key_addr) = Layer.getKeyFromPROGMEM;
 
 // The total number of defined layers in the firmware sketch keymaps[]
@@ -65,7 +65,7 @@ static void handleKeymapKeyswitchEvent(Key keymapEntry, uint8_t keyState) {
 }
 
 Key
-Layer_::eventHandler(Key mappedKey, uint8_t keyState) {
+Layer_::eventHandler(Key mappedKey, KeyAddr key_addr, uint8_t keyState) {
   if (mappedKey.flags != (SYNTHETIC | SWITCH_TO_KEYMAP))
     return mappedKey;
 
