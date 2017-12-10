@@ -40,6 +40,10 @@ static bool handleKeyswitchEventDefault(Key mappedKey, KeyAddr key_addr, uint8_t
   return true;
 }
 
+// void handleKeyswitchEvent(Key mapped_key, byte row, byte col, uint8_t key_state) {
+//   handleKeyswitchEvent(mapped_key, kaleidoscope::keyaddr::addr(row, col) key_state);
+// }
+
 void handleKeyswitchEvent(Key mappedKey, KeyAddr key_addr, uint8_t keyState) {
   /* These first steps are only done for keypresses that have a real (row,col).
    * In particular, doing them for keypresses with out-of-bounds (row,col)
