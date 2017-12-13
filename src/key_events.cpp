@@ -98,7 +98,7 @@ void handleKeyswitchEvent(Key mappedKey, KeyAddr key_addr, uint8_t keyState) {
 
   // New event handler interface
   //
-  if (!Kaleidoscope.hooks_->eventHandlerHook(mappedKey, EventKey{row, col, keyState}))
+  if (!Kaleidoscope.hooks_->eventHandlerHook(mappedKey, EventKey{key_addr, keyState}))
     return;
 
   mappedKey = Layer.eventHandler(mappedKey, key_addr, keyState);
