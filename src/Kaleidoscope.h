@@ -38,8 +38,7 @@ const uint8_t KEYMAP_SIZE
 __attribute__((deprecated("Kaleidoscope.setup() does not require KEYMAP_SIZE anymore."))) = 0;
 
 struct EventKey {
-  byte row_;
-  byte col_;
+  KeyAddr key_addr;
   uint8_t keyState_;
 };
 
@@ -165,9 +164,9 @@ class KaleidoscopePlugin {
    * called. It is intentionally protected, and accessible by the `Kaleidoscope`
    * class only.
    */
-  virtual void begin(void)
-  __attribute__((deprecated("KaleidoscopePlugin.begin() is deprecated. Please implement KaleidoscopePlugin.init() instead."))) {
-  };
+  /* virtual void begin(void) */
+  /* __attribute__((deprecated("KaleidoscopePlugin.begin() is deprecated. Please implement KaleidoscopePlugin.init() instead."))) { */
+  /* }; */
 
  public:
 
@@ -191,7 +190,7 @@ class KaleidoscopePlugin {
     // a plugin that relies on the legacy begin() method
     // to initialize itself and register hooks.
     //
-    this->begin();
+    //this->begin();
   }
 
   // This handler is supposed to return false if no other handlers are
@@ -393,15 +392,11 @@ class Kaleidoscope_ {
  public:
   Kaleidoscope_(void);
 
-  void setup(const byte keymap_count)
-  __attribute__((deprecated("The keymap_count argument (and the KEYMAP_SIZE macro) are unused, and can be safely removed."))) {
-    setup();
-  }
   void setup(void);
   void loop(void);
 
   // ---- Kaleidoscope.use() ----
-
+  /*
   // First, we have the zero-argument version, which will satisfy the tail case.
   inline void use() {
   }
@@ -427,6 +422,7 @@ class Kaleidoscope_ {
     use(first);
     use(plugins...);
   }
+  */
 
   // ---- hooks ----
 
@@ -446,22 +442,10 @@ class Kaleidoscope_ {
   typedef Key(*eventHandlerHook)(Key mappedKey, KeyAddr key_addr, uint8_t keyState);
   static eventHandlerHook eventHandlers[HOOK_MAX];
 
-  static void replaceEventHandlerHook(eventHandlerHook oldHook, eventHandlerHook newHook)
-  __attribute__((deprecated("Kaleidoscope::replaceEventHandlerHook(...) is deprecated. Please implement KaleidoscopePlugin.eventHandlerHook(...) instead.")));
-  static void appendEventHandlerHook(eventHandlerHook hook)
-  __attribute__((deprecated("Kaleidoscope::appendEventHandlerHook(...) is deprecated. Please implement KaleidoscopePlugin.eventHandlerHook(...) instead.")));
-  static void useEventHandlerHook(eventHandlerHook hook)
-  __attribute__((deprecated("Kaleidoscope::useEventHandlerHook(...) is deprecated. Please implement KaleidoscopePlugin.eventHandlerHook(...) instead.")));
 
   typedef void (*loopHook)(bool postClear);
   static loopHook loopHooks[HOOK_MAX];
 
-  static void replaceLoopHook(loopHook oldHook, loopHook newHook)
-  __attribute__((deprecated("Kaleidoscope::replaceLoopHook(...) is deprecated. Please implement KaleidoscopePlugin.beginLoopHook(...) or KaleidoscopePlugin.postReportHook(...) instead.")));
-  static void appendLoopHook(loopHook hook)
-  __attribute__((deprecated("Kaleidoscope::replaceLoopHook(...) is deprecated. Please implement KaleidoscopePlugin.beginLoopHook(...) or KaleidoscopePlugin.postReportHook(...) instead.")));
-  static void useLoopHook(loopHook hook)
-  __attribute__((deprecated("Kaleidoscope::replaceLoopHook(...) is deprecated. Please implement KaleidoscopePlugin.beginLoopHook(...) or KaleidoscopePlugin.postReportHook(...) instead.")));
 
   static bool focusHook(const char *command);
 

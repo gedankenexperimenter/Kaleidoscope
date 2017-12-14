@@ -46,54 +46,6 @@ Kaleidoscope_::loop(void) {
   hooks_->postReportHook();
 }
 
-void
-Kaleidoscope_::replaceEventHandlerHook(eventHandlerHook oldHook, eventHandlerHook newHook) {
-  for (byte i = 0; i < HOOK_MAX; i++) {
-    if (eventHandlers[i] == oldHook) {
-      eventHandlers[i] = newHook;
-      return;
-    }
-  }
-}
-
-void
-Kaleidoscope_::appendEventHandlerHook(eventHandlerHook hook) {
-  replaceEventHandlerHook((eventHandlerHook)NULL, hook);
-}
-
-void
-Kaleidoscope_::useEventHandlerHook(eventHandlerHook hook) {
-  for (byte i = 0; i < HOOK_MAX; i++) {
-    if (eventHandlers[i] == hook)
-      return;
-  }
-  appendEventHandlerHook(hook);
-}
-
-void
-Kaleidoscope_::replaceLoopHook(loopHook oldHook, loopHook newHook) {
-  for (byte i = 0; i < HOOK_MAX; i++) {
-    if (loopHooks[i] == oldHook) {
-      loopHooks[i] = newHook;
-      return;
-    }
-  }
-}
-
-void
-Kaleidoscope_::appendLoopHook(loopHook hook) {
-  replaceLoopHook((loopHook)NULL, hook);
-}
-
-void
-Kaleidoscope_::useLoopHook(loopHook hook) {
-  for (byte i = 0; i < HOOK_MAX; i++) {
-    if (loopHooks[i] == hook)
-      return;
-  }
-  appendLoopHook(hook);
-}
-
 bool
 Kaleidoscope_::focusHook(const char *command) {
   enum {
@@ -136,24 +88,3 @@ Kaleidoscope_::focusHook(const char *command) {
 }
 
 Kaleidoscope_ Kaleidoscope;
-
-/* Deprecated functions */
-
-void event_handler_hook_use(Kaleidoscope_::eventHandlerHook hook) {
-  Kaleidoscope.useEventHandlerHook(hook);
-}
-
-void loop_hook_use(Kaleidoscope_::loopHook hook) {
-  Kaleidoscope.useLoopHook(hook);
-}
-
-void __USE_PLUGINS(KaleidoscopePlugin *plugin, ...) {
-  va_list ap;
-
-  Kaleidoscope.use(plugin);
-
-  va_start(ap, plugin);
-  while ((plugin = (KaleidoscopePlugin *)va_arg(ap, KaleidoscopePlugin *)) != NULL)
-    Kaleidoscope.use(plugin);
-  va_end(ap);
-}
