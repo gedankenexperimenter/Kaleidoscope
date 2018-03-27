@@ -12,7 +12,6 @@
 #include "kaleidoscope/cKey.h"
 #include "kaleidoscope/cKeyAddr.h"
 #include "kaleidoscope/KeyArray.h"
-#include "kaleidoscope/KeyFlavor.h"
 
 
 namespace kaleidoscope {
@@ -43,14 +42,14 @@ LayerKey Keymap::lookupActiveLayerKey(KeyAddr key_addr) const {
   // First, unconditionally check the top layer
   byte layer_index{top_active_layer_index_};
   Key key = lookup(key_addr, layer_index);
-  if (! key.isTransparent())
+  if (! key.isClear())
     return {layer_index, key};
 
   // Then search the layer stack, stopping at the default layer
   for (--layer_index; layer_index > default_layer_index_; --layer_index) {
     if (isLayerActive(layer_index)) {
       key = lookup(key_addr, layer_index);
-      if (! key.isTransparent())
+      if (! key.isClear())
         return {layer_index, key};
     }
   }
@@ -100,36 +99,26 @@ void Keymap::toggleLayer(byte layer_index) {
 
 
 void Keymap::handleLayerChange(KeyswitchEvent event, KeyArray& active_keys) {
-  byte layer_index    = event.key.layer.index();
-  byte layer_key_type = event.key.layer.type();
+  Key::Layer layer_key{event.key};
 
-  assert(layer_index < layer_count_);
+  assert(layer_key.index() < layer_count_);
 
-  // TODO: replace hardcoded constants
-  switch (layer_key_type & 1) {
-
-    case 0: // toggle layer
-      if (event.state.toggledOn())
-        toggleLayer(layer_index);
-      break;
-
-    case 1: // shift layer
-      if (event.state.toggledOn()) {
-        top_active_layer_index_ = layer_index;
-        for (KeyAddr k = cKeyAddr::start; k < cKeyAddr::end; ++k) {
-          if (k == event.addr)
-            continue;
-          Key& key = active_keys[k];
-          if ((key.flavor() == KeyFlavor::layer) && (key.layer.type() == 1))
-            key.mask();
-        }
-      } else {
-        updateTopActiveLayer_();
+  if (layer_key.isLayerShift()) {
+    if (event.state.toggledOn()) {
+      top_active_layer_index_ = layer_key.index();
+      for (KeyAddr k = cKeyAddr::start; k < cKeyAddr::end; ++k) {
+        if (k == event.addr)
+          continue;
+        Key& key = active_keys[k];
+        if ((key.type() == KeyType::layer) && Key::Layer(key).isLayerShift())
+          key.mask();
       }
-      break;
-
-    default:
-      break;
+    } else {
+      updateTopActiveLayer_();
+    }
+  } else {
+    if (event.state.toggledOn())
+      toggleLayer(layer_key.index());
   }
   // Maybe we want to use a bit to signal switches between PROGMEM & EEPROM keymaps, but
   // I'm inclined to think that should be a separate function entirely

@@ -58,7 +58,7 @@ class Layer {
     bool operator!=(const Iterator& other) {
       while (pos_ != other.pos_) {
         key_ = layer_[KeyAddr(pos_)]; 
-        if (! key_.isTransparent()) {
+        if (! key_.isClear()) {
           return true;
         }
         ++pos_;

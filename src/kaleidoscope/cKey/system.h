@@ -12,46 +12,46 @@ namespace kaleidoscope {
 // `constant` or `const`
 namespace cKey {
 
-namespace system {
+namespace System {
 
-constexpr Key PowerDown = systemKey(HID_SYSTEM_POWER_DOWN);
-constexpr Key Sleep = systemKey(HID_SYSTEM_SLEEP);
-constexpr Key WakeUp = systemKey(HID_SYSTEM_WAKE_UP);
-constexpr Key ContextMenu = systemKey(HID_SYSTEM_CONTEXT_MENU);
-constexpr Key MainMenu = systemKey(HID_SYSTEM_MAIN_MENU);
-constexpr Key AppMenu = systemKey(HID_SYSTEM_APP_MENU);
-constexpr Key MenuHelp = systemKey(HID_SYSTEM_MENU_HELP);
-constexpr Key MenuExit = systemKey(HID_SYSTEM_MENU_EXIT);
-constexpr Key MenuSelect = systemKey(HID_SYSTEM_MENU_SELECT);
-constexpr Key MenuRight = systemKey(HID_SYSTEM_MENU_RIGHT);
-constexpr Key MenuLeft = systemKey(HID_SYSTEM_MENU_LEFT);
-constexpr Key MenuUp = systemKey(HID_SYSTEM_MENU_UP);
-constexpr Key MenuDown = systemKey(HID_SYSTEM_MENU_DOWN);
-constexpr Key ColdRestart = systemKey(HID_SYSTEM_COLD_RESTART);
-constexpr Key WarmRestart = systemKey(HID_SYSTEM_WARM_RESTART);
-constexpr Key DPadUp = systemKey(HID_D_PAD_UP);
-constexpr Key DPadDown = systemKey(HID_D_PAD_DOWN);
-constexpr Key DPadRight = systemKey(HID_D_PAD_RIGHT);
-constexpr Key DPadLeft = systemKey(HID_D_PAD_LEFT);
+constexpr Key::System PowerDown { HID_SYSTEM_POWER_DOWN };
+constexpr Key::System Sleep { HID_SYSTEM_SLEEP };
+constexpr Key::System WakeUp { HID_SYSTEM_WAKE_UP };
+constexpr Key::System ContextMenu { HID_SYSTEM_CONTEXT_MENU };
+constexpr Key::System MainMenu { HID_SYSTEM_MAIN_MENU };
+constexpr Key::System AppMenu { HID_SYSTEM_APP_MENU };
+constexpr Key::System MenuHelp { HID_SYSTEM_MENU_HELP };
+constexpr Key::System MenuExit { HID_SYSTEM_MENU_EXIT };
+constexpr Key::System MenuSelect { HID_SYSTEM_MENU_SELECT };
+constexpr Key::System MenuRight { HID_SYSTEM_MENU_RIGHT };
+constexpr Key::System MenuLeft { HID_SYSTEM_MENU_LEFT };
+constexpr Key::System MenuUp { HID_SYSTEM_MENU_UP };
+constexpr Key::System MenuDown { HID_SYSTEM_MENU_DOWN };
+constexpr Key::System ColdRestart { HID_SYSTEM_COLD_RESTART };
+constexpr Key::System WarmRestart { HID_SYSTEM_WARM_RESTART };
+constexpr Key::System DPadUp { HID_D_PAD_UP };
+constexpr Key::System DPadDown { HID_D_PAD_DOWN };
+constexpr Key::System DPadRight { HID_D_PAD_RIGHT };
+constexpr Key::System DPadLeft { HID_D_PAD_LEFT };
 
-constexpr Key Dock = systemKey(HID_SYSTEM_DOCK);
-constexpr Key Undock = systemKey(HID_SYSTEM_UNDOCK);
-constexpr Key Setup = systemKey(HID_SYSTEM_SETUP);
-constexpr Key Break = systemKey(HID_SYSTEM_BREAK);
-constexpr Key DebuggerBreak = systemKey(HID_SYSTEM_DEBUGGER_BREAK);
-constexpr Key ApplicationBreak = systemKey(HID_APPLICATION_BREAK);
-constexpr Key ApplicationDebuggerBreak = systemKey(HID_APPLICATION_DEBUGGER_BREAK);
-constexpr Key SpeakerMute = systemKey(HID_SYSTEM_SPEAKER_MUTE);
-constexpr Key Hibernate = systemKey(HID_SYSTEM_HIBERNATE);
+constexpr Key::System Dock { HID_SYSTEM_DOCK };
+constexpr Key::System Undock { HID_SYSTEM_UNDOCK };
+constexpr Key::System Setup { HID_SYSTEM_SETUP };
+constexpr Key::System Break { HID_SYSTEM_BREAK };
+constexpr Key::System DebuggerBreak { HID_SYSTEM_DEBUGGER_BREAK };
+constexpr Key::System ApplicationBreak { HID_APPLICATION_BREAK };
+constexpr Key::System ApplicationDebuggerBreak { HID_APPLICATION_DEBUGGER_BREAK };
+constexpr Key::System SpeakerMute { HID_SYSTEM_SPEAKER_MUTE };
+constexpr Key::System Hibernate { HID_SYSTEM_HIBERNATE };
 
-constexpr Key DisplayInvert = systemKey(HID_SYSTEM_DISPLAY_INVERT);
-constexpr Key DisplayInternal = systemKey(HID_SYSTEM_DISPLAY_INTERNAL);
-constexpr Key DisplayExternal = systemKey(HID_SYSTEM_DISPLAY_EXTERNAL);
-constexpr Key DisplayBoth = systemKey(HID_SYSTEM_DISPLAY_BOTH);
-constexpr Key DisplayDual = systemKey(HID_SYSTEM_DISPLAY_DUAL);
-constexpr Key DisplayToggleIntSlashExt = systemKey(HID_SYSTEM_DISPLAY_TOGGLE_INT_SLASH_EXT);
-constexpr Key DisplaySwapPrimarySlashSecondary = systemKey(HID_SYSTEM_DISPLAY_SWAP_PRIMARY_SLASH_SECONDARY);
-constexpr Key DisplayLCDAutoscale = systemKey(HID_SYSTEM_DISPLAY_LCD_AUTOSCALE);
+constexpr Key::System DisplayInvert { HID_SYSTEM_DISPLAY_INVERT };
+constexpr Key::System DisplayInternal { HID_SYSTEM_DISPLAY_INTERNAL };
+constexpr Key::System DisplayExternal { HID_SYSTEM_DISPLAY_EXTERNAL };
+constexpr Key::System DisplayBoth { HID_SYSTEM_DISPLAY_BOTH };
+constexpr Key::System DisplayDual { HID_SYSTEM_DISPLAY_DUAL };
+constexpr Key::System DisplayToggleIntSlashExt { HID_SYSTEM_DISPLAY_TOGGLE_INT_SLASH_EXT };
+constexpr Key::System DisplaySwapPrimarySlashSecondary { HID_SYSTEM_DISPLAY_SWAP_PRIMARY_SLASH_SECONDARY };
+constexpr Key::System DisplayLCDAutoscale { HID_SYSTEM_DISPLAY_LCD_AUTOSCALE };
 
 } // namespace consumer {
 

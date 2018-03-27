@@ -5,7 +5,6 @@
 #include <Arduino.h>
 #include <KeyboardioHID.h>
 
-#include "kaleidoscope/KeyFlavor.h"
 #include "kaleidoscope/Key.h"
 #include "kaleidoscope/cKey.h"
 
@@ -35,13 +34,14 @@ void Report::add(Key key, byte mod_flags_allowed) {
   if (key == cKey::clear)
     return;
 
-  switch (key.flavor()) {
+  switch (key.type()) {
 
-    case KeyFlavor::keyboard:
+    case KeyType::keyboard:
       {
-        byte modifiers = key.mods();
-        byte keycode = key.keyboard.keycode;
-        byte mod_keycode = cKey::first_modifier.keyboard.keycode;
+        Key::Keyboard keyboard_key{key};
+        byte modifiers = keyboard_key.modifiers();
+        byte keycode = keyboard_key.keycode();
+        byte mod_keycode = cKey::first_modifier.keycode();
         if (keycode < mod_keycode && keycode > 0)
           modifiers = modifiers & mod_flags_allowed;
         while (modifiers != 0) {
@@ -50,21 +50,18 @@ void Report::add(Key key, byte mod_flags_allowed) {
           mod_keycode += 1;
           modifiers >>= 1;
         }
-        ::Keyboard.press(key.keyboard.keycode);
+        ::Keyboard.press(keyboard_key.keycode());
         return;
       }
 
-    case KeyFlavor::consumer:
+    case KeyType::consumer:
       // This uses the CONSUMER preprocessor macro
-      ::ConsumerControl.press(key.consumer.keycode);
+      ::ConsumerControl.press(Key::Consumer(key).keycode());
       return;
 
-    case KeyFlavor::system:
+    case KeyType::system:
       // System Control is different; press() sends immediately
-      ::SystemControl.press(key.system.keycode);
-      return;
-
-    case KeyFlavor::layer:
+      ::SystemControl.press(Key::System(key).keycode());
       return;
 
     default:
@@ -79,26 +76,26 @@ void Report::remove(Key key) {
   if (key.isEmpty())
     return;
 
-  switch (key.flavor()) {
+  switch (key.type()) {
 
-    case KeyFlavor::keyboard:
+    case KeyType::keyboard:
       // Here we don't want to remove modifier flags, because they could have been added
       // by other keys (or plugins)
-      ::Keyboard.release(key.keyboard.keycode);
+      ::Keyboard.release(Key::Keyboard(key).keycode());
       return;
 
-    case KeyFlavor::consumer:
+    case KeyType::consumer:
       // This uses the CONSUMER preprocessor macro
-      ::ConsumerControl.release(key.consumer.keycode);
+      ::ConsumerControl.release(Key::Consumer(key).keycode());
       return;
 
-    case KeyFlavor::system:
+    case KeyType::system:
       // System Control is different; release() sends immediately, and there's only one
       // keycode at a time
       ::SystemControl.release();
       return;
 
-    case KeyFlavor::layer:
+    case KeyType::layer:
       return;
 
     default:
