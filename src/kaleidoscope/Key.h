@@ -91,6 +91,8 @@ class Key {
     return this->isBlank();
   }
 
+  // This function should be removed; it bloats the code, the firmware, and causes it to
+  // run slower than testing for each variant individually.
   KeyType type() const;
 
 

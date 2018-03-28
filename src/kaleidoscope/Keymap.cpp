@@ -110,7 +110,7 @@ void Keymap::handleLayerChange(KeyswitchEvent event, KeyArray& active_keys) {
         if (k == event.addr)
           continue;
         Key& key = active_keys[k];
-        if ((key.type() == KeyType::layer) && Key::Layer(key).isLayerShift())
+        if (Key::Layer::testType(key) && Key::Layer(key).isLayerShift())
           key.mask();
       }
     } else {

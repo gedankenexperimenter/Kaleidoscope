@@ -81,7 +81,7 @@ void Controller::handleKeyswitchEvent(KeyswitchEvent event, Plugin* caller) {
   // Handle layer shifts and toggles. Maybe this should happen before updating
   // active_keys_, but if we do that, the keymap will need access to active_keys_ to do
   // the update.
-  if (event.key.type() == KeyType::layer) {
+  if (Key::Layer::testType(event.key)) {
     keymap_.handleLayerChange(event, active_keys_);
     return;
   }
@@ -89,33 +89,19 @@ void Controller::handleKeyswitchEvent(KeyswitchEvent event, Plugin* caller) {
   if (event.key.isEmpty())
     return;
 
-  switch (event.key.type()) {
-    case KeyType::keyboard:
-      {
-        Key::Keyboard key{event.key};
-        byte keycode = key.keycode();
-        byte mod_keycode = cKey::first_modifier.keycode();
-        if (event.state.toggledOn() && keycode < mod_keycode && keycode > 0) {
-          // If a printable keycode was just pressed, we need to override any modifier
-          // flags from held keys that would alter the newly-pressed keycode
-          mod_flags_allowed_ = key.modifiers();
-        } else {
-          mod_flags_allowed_ = 0xFF;
-        }
-      }
-      sendKeyboardReport();
-      break;
-    case KeyType::consumer:
-      // sendConsumerReport();
-      break;
-    case KeyType::system:
-      // sendSystemReport();
-      break;
-    case KeyType::mouse:
-      // sendMouseReport();
-      break;
-    default:
-      break;
+  if (Key::Keyboard::testType(event.key)) {
+    Key::Keyboard key{event.key};
+    byte keycode = key.keycode();
+    byte mod_keycode = cKey::first_modifier.keycode();
+    if (event.state.toggledOn() && keycode < mod_keycode && keycode > 0) {
+      // If a printable keycode was just pressed, we need to override any modifier
+      // flags from held keys that would alter the newly-pressed keycode
+      mod_flags_allowed_ = key.modifiers();
+    } else {
+      mod_flags_allowed_ = 0xFF;
+    }
+    sendKeyboardReport();
+    return;
   }
 }
 

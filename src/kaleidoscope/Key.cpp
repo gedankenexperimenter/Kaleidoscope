@@ -7,9 +7,8 @@
 
 namespace kaleidoscope {
 
-// Return the correct type (KeyFlavor) of the Key object. I expect KeyFlavor::plugin to be
-// more common than most of the core types, so I moved it up higher. These should be
-// sorted in descending order of frequency of use; I'm just guessing here.
+// This function should probably be removed; it's always more efficient to test just the
+// type we're interested in using the specific `Key` variant.
 KeyType Key::type() const {
   if (Key::Keyboard::testType(*this))
     return KeyType::keyboard;
