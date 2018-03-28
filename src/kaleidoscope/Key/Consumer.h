@@ -3,6 +3,7 @@
 #pragma once
 
 #include "kaleidoscope/Key.h"
+#include <assert.h>
 
 
 namespace kaleidoscope {
@@ -20,9 +21,16 @@ class Key::Consumer {
   constexpr explicit
   Consumer(uint16_t keycode) : keycode_(keycode),
                                type_id_(Key::consumer_type_id) {}
+
   explicit
-  Consumer(Key key) : keycode_(uint16_t(key)),
-                      type_id_(Key::consumer_type_id) {}
+  Consumer(Key key) : keycode_(uint16_t(key)      ),
+                      type_id_(uint16_t(key) << 10)  {
+    assert(type_id_ == Key::consumer_type_id);
+  }
+  // Consumer(Key key) {
+  //   *this = static_cast<Consumer>(key);
+  // }
+
   constexpr
   operator Key() const {
     return Key( keycode_ |

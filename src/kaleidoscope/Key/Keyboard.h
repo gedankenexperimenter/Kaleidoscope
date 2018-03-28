@@ -21,6 +21,7 @@ class Key::Keyboard {
   static constexpr byte mod_gui     { 0b1000 };  // (1 << 3)
 
  public:
+  constexpr
   byte keycode() const { return keycode_; }
   byte modifiers() const;
   bool isModifier() const;
@@ -53,6 +54,9 @@ class Key::Keyboard {
                       type_id_    (uint16_t(key) >> (8 + 4 + 1))  {
     assert(type_id_ == Key::keyboard_type_id);
   }
+  // Keyboard(Key key) {
+  //   *this = static_cast<Keyboard>(key);
+  // }
 
   // Cast operator to convert Key::Keyboard objects to plain Key objects
   constexpr
@@ -62,8 +66,11 @@ class Key::Keyboard {
                            mods_right_ << (8 + 4)     |
                            type_id_    << (8 + 4 + 1)   ) };
   }
+  // operator Key() const {
+  //   return static_cast<Key>(*this);
+  // }
 
-  static bool testType(Key key) {
+  static constexpr bool testType(Key key) {
     return ((uint16_t(key) >> (8 + 4 + 1)) == Key::keyboard_type_id);
   }
 };

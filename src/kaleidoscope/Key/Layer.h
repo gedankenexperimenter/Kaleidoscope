@@ -26,6 +26,18 @@ class Key::Layer {
       : index_(index), shift_(shift), move_(move), reserved_(0),
         type_id_(Key::layer_type_id) {}
 
+  explicit
+  // Layer(Key key) : index_    (uint16_t(key)                   ),
+  //                           shift_    (uint16_t(key) >>  6             ),
+  //                           move_     (uint16_t(key) >> (6 + 1)        ),
+  //                           reserved_ (uint16_t(key) >> (6 + 1 + 1)    ),
+  //                           type_id_  (uint16_t(key) >> (6 + 1 + 1 + 2)) {
+  //   assert(type_id_ == Key::layer_type_id);
+  // }
+  Layer(Key key) {
+    *this = static_cast<Layer>(key);
+  }
+
   constexpr
   operator Key() const {
     return Key ( index_                      |
@@ -33,14 +45,6 @@ class Key::Layer {
                  move_     << (6 + 1)        |
                  reserved_ << (6 + 1 + 1)    |
                  type_id_  << (6 + 1 + 1 + 2) );
-  }
-
-  explicit Layer(Key key) : index_    (uint16_t(key)                   ),
-                            shift_    (uint16_t(key) >>  6             ),
-                            move_     (uint16_t(key) >> (6 + 1)        ),
-                            reserved_ (uint16_t(key) >> (6 + 1 + 1)    ),
-                            type_id_  (uint16_t(key) >> (6 + 1 + 1 + 2)) {
-    assert(type_id_ == Key::layer_type_id);
   }
 
   static bool testType(Key key) {
