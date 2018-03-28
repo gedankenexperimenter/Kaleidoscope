@@ -17,8 +17,8 @@ class Key::Mouse {
             type_id_ (Key::mouse_type_id) {}
 
   constexpr explicit
-  Mouse(byte keycode) : keycode_(keycode),
-                        type_id_(Key::mouse_type_id) {}
+  Mouse(byte keycode) : keycode_ (keycode),
+                        type_id_ (Key::mouse_type_id) {}
 
   explicit
   Mouse(Key key) : keycode_ (uint16_t(key)     ),
@@ -28,8 +28,8 @@ class Key::Mouse {
 
   constexpr
   operator Key() const {
-    return Key { uint16_t(keycode_      |
-                          type_id_ << 8  ) };
+    return Key( keycode_      |
+                type_id_ << 8   );
   }
 
   static bool testType(Key key) {

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "kaleidoscope/Key.h"
+#include <assert.h>
 
 
 namespace kaleidoscope {
@@ -19,7 +20,7 @@ class Key::Plugin {
              type_id_ (Key::plugin_type_id) {}
 
   constexpr explicit
-  Plugin(byte data) : data_(data),
+  Plugin(byte data) : data_    (data),
                       type_id_ (Key::plugin_type_id) {}
 
   explicit
@@ -30,14 +31,13 @@ class Key::Plugin {
 
   constexpr
   operator Key() const {
-    return Key { uint16_t(data_          |
-                          type_id_ << 14  ) };
+    return Key( data_          |
+                type_id_ << 14   );
   }
 
   static bool testType(Key key) {
     return ((uint16_t(key) >> 14) == Key::plugin_type_id);
   }
-
 };
 
 } // namespace kaleidoscope {

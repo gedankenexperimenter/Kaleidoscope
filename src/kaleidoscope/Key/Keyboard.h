@@ -54,21 +54,15 @@ class Key::Keyboard {
                       type_id_    (uint16_t(key) >> (8 + 4 + 1))  {
     assert(type_id_ == Key::keyboard_type_id);
   }
-  // Keyboard(Key key) {
-  //   *this = static_cast<Keyboard>(key);
-  // }
 
   // Cast operator to convert Key::Keyboard objects to plain Key objects
   constexpr
   operator Key() const {
-    return Key { uint16_t( keycode_                   |
-                           mods_       <<  8          |
-                           mods_right_ << (8 + 4)     |
-                           type_id_    << (8 + 4 + 1)   ) };
+    return Key( keycode_                   |
+                mods_       <<  8          |
+                mods_right_ << (8 + 4)     |
+                type_id_    << (8 + 4 + 1)   );
   }
-  // operator Key() const {
-  //   return static_cast<Key>(*this);
-  // }
 
   static constexpr bool testType(Key key) {
     return ((uint16_t(key) >> (8 + 4 + 1)) == Key::keyboard_type_id);
