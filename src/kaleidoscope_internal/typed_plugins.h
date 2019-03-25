@@ -122,14 +122,38 @@ auto getEntryFromPROGMEM(const ArrayType__ &array, uint8_t n)
 // check as the compile would fail if a nested ContentType would not
 // be defined
 -> typename ArrayType__::ContentType * {
-  // C++ requires "typename" to be explicily stated for retreiving
-  // nested typedefs from template parameters.
-  //
+  // For better readability, we define the `TargetType` alias here, rather than
+  // using `ArrayType__::ContentType` repeatedly below.  C++ requires "typename"
+  // to be explicily stated for retreiving nested typedefs from template
+  // parameters.
   typedef typename ArrayType__::ContentType TargetType;
 
-  return reinterpret_cast<TargetType*>(
-           pgm_read_word(&reinterpret_cast<TargetType *const*>(&array)[n])
-         );
+  // First, we treat the `array` object in PROGMEM as an array of pointers to
+  // `TargetType` objects. We call this `pgm_ptr_array`. What we really get is a
+  // pointer to the first element of the array, of course. It is important to
+  // understand that this is a pointer to an address is PROGMEM, not in RAM, so
+  // if we just use it as a normal pointer, we will be accessing values in RAM,
+  // not the real values in PROGMEM.
+  TargetType* const *pgm_ptr_array =
+      reinterpret_cast<TargetType* const *>(&array);
+
+  // Next, we get the (PROGMEM) pointer to the specific entry in that array by
+  // computing its address (`&(pgm_ptr_array[n])`). This must be done in a
+  // single step, so that we never access the content of `pgm_ptr_array[n]`,
+  // which would read a value from RAM. Essentially, we're just adding `n` to
+  // `pgm_ptr_array`. The compiler scales `n` by the size of the pointer for us.
+  TargetType* const *pgm_ptr = pgm_ptr_array + n;
+
+  // Now that we've got the address (in PROGMEM) of the pointer data we want, we
+  // can read it directly. As long as a pointer is just two bytes, this works
+  // just fine. If a pointer was four bytes, we'd have to use
+  // `pgm_read_word_far()` instead.
+  uint16_t ptr_data = pgm_read_word(pgm_ptr);
+
+  // Now we have the value of the pointer, but it's represented as an integer,
+  // so we need to use `reinterpret_cast` again in order to return it as a
+  // pointer of the correct type.
+  return reinterpret_cast<TargetType*>(ptr_data);
 }
 
 } // end namespace typed_plugins
