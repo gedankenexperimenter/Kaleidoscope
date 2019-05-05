@@ -36,15 +36,18 @@ class EventQueue {
                 "EventQueue error: _Bitfield type too small for _capacity!");
 
  private:
-  uint8_t    length_{0};
+  uint8_t    head_{0};
+  uint8_t    tail_{0};
   KeyAddr    addrs_[_capacity];
   _Timestamp timestamps_[_capacity];
   _Bitfield  release_event_bits_;
 
  public:
-  uint8_t length() const { return length_; }
-  bool    isEmpty() const { return (length_ == 0); }
-  bool    isFull() const { return (length_ == _capacity); }
+  uint8_t head() const { return head_; }
+  uint8_t tail() const { return tail_; }
+
+  bool isEmpty() const { return ((tail_ - 1) % _capacity == head_); }
+  bool isFull() const { return (tail_ == head_); }
 
   KeyAddr addr(uint8_t index) const { return addrs_[index]; }
 
@@ -57,25 +60,21 @@ class EventQueue {
 
   // Append a new event on the end of the queue.
   void append(KeyAddr k, uint8_t keyswitch_state) {
-    addrs_[length_]      = k;
-    timestamps_[length_] = Kaleidoscope.millisAtCycleStart();
-    bitWrite(release_event_bits_, length_, keyToggledOff(keyswitch_state));
-    ++length_;
+    addrs_[tail_]      = k;
+    timestamps_[tail_] = Kaleidoscope.millisAtCycleStart();
+    bitWrite(release_event_bits_, tail_, keyToggledOff(keyswitch_state));
+    ++tail_;
   }
 
   // Remove the first event from the head of the queue, shifting the others.
   void shift() {
-    --length_;
-    for (uint8_t i{0}; i < length_; ++i) {
-      addrs_[i]      = addrs_[i + 1];
-      timestamps_[i] = timestamps_[i + 1];
-    }
-    release_event_bits_ >>= 1;
+    ++head_;
   }
 
   // Empty the queue entirely.
   void clear() {
-    length_             = 0;
+    head_ = 0;
+    tail_ = 0;
     release_event_bits_ = 0;
   }
 };

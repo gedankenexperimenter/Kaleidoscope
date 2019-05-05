@@ -68,7 +68,7 @@ EventHandlerResult Qukeys::onKeyswitchEvent(Key& key,
   // flushed. Therefore, we search the event queue for the same key. If the
   // first event we find there is a key press, that means we need to suppress
   // this hold, because it's still waiting on an earlier event.
-  for (uint8_t i{0}; i < event_queue_.length(); ++i) {
+  for (uint8_t i = event_queue_.head(); i != event_queue_.tail(); ++i, i %= queue_capacity_) {
     if (event_queue_.addr(i) == k) {
       // If the first matching event is a release, we do not suppress it,
       // because its press event has already been flushed.
@@ -95,7 +95,7 @@ EventHandlerResult Qukeys::beforeReportingState() {
   // For keys that have been physically released, but whose release events are
   // still waiting to be flushed from the queue, we need to restore them,
   // because `handleKeyswitchEvent()` didn't get called for those KeyAddrs.
-  for (uint8_t i{0}; i < event_queue_.length(); ++i) {
+  for (uint8_t i = event_queue_.head(); i != event_queue_.tail(); ++i, i %= queue_capacity_) {
     if (event_queue_.isRelease(i)) {
       KeyAddr k = event_queue_.addr(i);
       // Now for the tricky bit. Before "restoring" this key hold, we need to
@@ -152,7 +152,7 @@ bool Qukeys::processQueue() {
   }
 
   // In other cases, we will want the KeyAddr of the first event in the queue.
-  KeyAddr queue_head_addr = event_queue_.addr(0);
+  KeyAddr queue_head_addr = event_queue_.addr(event_queue_.head());
 
   // If that first event is a key release, it can be flushed right away.
   if (event_queue_.isRelease(0)) {
@@ -183,7 +183,7 @@ bool Qukeys::processQueue() {
   // Now we search the queue for events that will let us decide if the qukey
   // should be flushed (and if so, in which of its two states). We start with
   // the second event in the queue (index 1).
-  for (uint8_t i{1}; i < event_queue_.length(); ++i) {
+  for (uint8_t i = event_queue_.head() + 1; i != event_queue_.tail(); ++i, i %= queue_capacity_) {
     if (event_queue_.isPress(i)) {
       // If some other key was pressed after a SpaceCadet key, that means the
       // SpaceCadet qukey press should be flushed immediately, in its primary
@@ -235,7 +235,7 @@ bool Qukeys::processQueue() {
     // to see if it's also a key that was pressed subsequent to the press of the
     // qukey. We search from the next event after the qukey was pressed, and
     // stop when we get to the release event we're currently looking at.
-    for (uint8_t j{1}; j < i; ++j) {
+    for (uint8_t j = event_queue_.head() + 1; j != i; ++j, j %= queue_capacity_) {
       // If we find an event with a matching KeyAddr, that means there are two
       // events for the same key in the queue after the qukey was pressed. Since
       // the second (or maybe third) event `i` is a key release, even if `j` is
