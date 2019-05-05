@@ -63,12 +63,12 @@ class EventQueue {
     addrs_[tail_]      = k;
     timestamps_[tail_] = Kaleidoscope.millisAtCycleStart();
     bitWrite(release_event_bits_, tail_, keyToggledOff(keyswitch_state));
-    ++tail_;
+    ++tail_, tail_ %= _capacity;
   }
 
   // Remove the first event from the head of the queue, shifting the others.
   void shift() {
-    ++head_;
+    ++head_, head_ %= _capacity;
   }
 
   // Empty the queue entirely.
