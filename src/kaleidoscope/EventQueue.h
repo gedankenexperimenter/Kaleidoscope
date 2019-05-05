@@ -73,26 +73,6 @@ class EventQueue {
     release_event_bits_ >>= 1;
   }
 
-  // Remove an event from the middle of the queue. This is considerably more
-  // costly than removing the event at the head of the queue with `shift()` (see
-  // above).
-  void remove(uint8_t index) {
-    --length_;
-    for (uint8_t i{index}; i < length_; ++i) {
-      addrs_[i]      = addrs_[i + 1];
-      timestamps_[i] = timestamps_[i + 1];
-    }
-    static constexpr _Bitfield all = -1;
-
-    _Bitfield tail_mask = all << index;
-    _Bitfield head_mask = ~tail_mask;
-
-    _Bitfield tail = (release_event_bits_ >> 1) & tail_mask;
-    _Bitfield head = release_event_bits_ & head_mask;
-
-    release_event_bits_ = tail | head;
-  }
-
   // Empty the queue entirely.
   void clear() {
     length_             = 0;
