@@ -67,6 +67,34 @@ TEST_F(OneShotBasic, OneShotModifier) {
   }
 }
 
+TEST_F(OneShotBasic, OsmTimeout) {
+
+  ClearState();
+
+  // Tap `OSM(LeftShift)`
+  PressKey(Millis{10}, key_addr_OSM_LeftShift);
+  ExpectReport(Cycles{1}, AddKeycodes{Key_LeftShift},
+               "Report should contain only `LeftShift`");
+  ReleaseKey(Millis{20}, key_addr_OSM_LeftShift);
+
+  RunFrom(EventTimestamp(0), Millis{ONESHOT_TIMEOUT});
+  ExpectReport(Cycles{3}, RemoveKeycodes{Key_LeftShift},
+               "Report should be empty");
+
+  // Run(Cycles{2});
+  LoadState();
+
+  constexpr int expected_report_count = 2;
+  ASSERT_EQ(HIDReports()->Keyboard().size(), expected_report_count)
+      << "There should be " << expected_report_count << " HID reports";
+
+  for (int i = 0; i < expected_report_count; ++i) {
+    EXPECT_THAT(HIDReports()->Keyboard(i).ActiveKeycodes(),
+                ::testing::ElementsAreArray(expected_reports_[i].Keycodes()))
+        << expected_reports_[i].Message();
+  }
+}
+
 }  // namespace
 }  // namespace testing
 }  // namespace kaleidoscope

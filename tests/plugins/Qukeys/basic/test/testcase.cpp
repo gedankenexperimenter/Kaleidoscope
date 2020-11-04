@@ -39,12 +39,12 @@ TEST_F(QukeysBasic, TapQukeyAlone) {
   ExpectReport(Cycles{1}, AddKeycodes{Key_A}, "Report should contain only `A`");
   ExpectReport(Cycles{1}, RemoveKeycodes{Key_A}, "Report should be empty");
 
-  sim_.RunForMillis(10);
+  Run(Cycles{3});
   LoadState();
 
   constexpr int expected_report_count = 2;
   ASSERT_EQ(HIDReports()->Keyboard().size(), expected_report_count)
-      << "There should be two HID reports after a qukey is tapped";
+      << "There should be " << expected_report_count << " HID reports";
 
   for (int i = 0; i < expected_report_count; ++i) {
     EXPECT_THAT(HIDReports()->Keyboard(i).ActiveKeycodes(),
@@ -63,14 +63,14 @@ TEST_F(QukeysBasic, HoldQukeyAlone) {
   ExpectReport(Cycles{1}, RemoveKeycodes{Key_LeftGui},
                "The second report should be empty");
 
-  sim_.RunForMillis(10);
+  Run(Cycles{3});
   LoadState();
 
   constexpr int expected_report_count = 2;
   ASSERT_EQ(HIDReports()->Keyboard().size(), expected_report_count)
-      << "There should be two HID reports after a qukey is held and released";
+      << "There should be " << expected_report_count << " HID reports";
 
-  uint32_t measured_delay = ReportTimestamp(0) - input_timestamps_[0];
+  Millis measured_delay = ReportTimestamp(0) - input_timestamps_[0];
   EXPECT_THAT(measured_delay, ::testing::Ge(QUKEYS_HOLD_TIMEOUT))
       << "The HID report should be sent after the hold timeout has elapsed";
 
@@ -99,12 +99,12 @@ TEST_F(QukeysBasic, FullOverlap) {
   ExpectReport(Cycles{1}, RemoveKeycodes{Key_LeftShift},
                "The fourth report should remove `LeftShift`");
 
-  sim_.RunForMillis(10);
+  Run(Cycles{3});
   LoadState();
 
   constexpr int expected_report_count = 4;
   ASSERT_EQ(HIDReports()->Keyboard().size(), expected_report_count)
-      << "There should be four HID reports total";
+      << "There should be " << expected_report_count << " HID reports";
 
   for (int i = 0; i < expected_report_count; ++i) {
     EXPECT_THAT(HIDReports()->Keyboard(i).ActiveKeycodes(),
@@ -128,12 +128,12 @@ TEST_F(QukeysBasic, RolloverPrimary) {
   ExpectReport(Cycles{1}, RemoveKeycodes{Key_X},
                "The fourth report should remove `X`");
 
-  sim_.RunForMillis(10);
+  Run(Cycles{3});
   LoadState();
 
   constexpr int expected_report_count = 4;
   ASSERT_EQ(HIDReports()->Keyboard().size(), expected_report_count)
-      << "There should be four HID reports total";
+      << "There should be " << expected_report_count << " HID reports";
 
   for (int i = 0; i < expected_report_count; ++i) {
     EXPECT_THAT(HIDReports()->Keyboard(i).ActiveKeycodes(),
