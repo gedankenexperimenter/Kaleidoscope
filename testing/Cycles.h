@@ -1,5 +1,5 @@
 /* -*- mode: c++ -*-
- * Copyright (C) 2020  Keyboard.io, Inc
+ * Copyright (C) 2020  Keyboard.io, Inc.
  *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -14,30 +14,16 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "testing/ExpectedKeyboardReport.h"
+#pragma once
+
+#include <cstdint>
 
 namespace kaleidoscope {
 namespace testing {
 
-ExpectedKeyboardReport::ExpectedKeyboardReport(Millis timestamp,
-    const std::set<uint8_t> &keycodes,
-    std::string message) {
-  timestamp_ = timestamp;
-  keycodes_ = std::set<uint8_t>(keycodes);
-  failure_message_ = message;
-}
-
-const std::set<uint8_t> & ExpectedKeyboardReport::Keycodes() const {
-  return keycodes_;
-}
-
-Millis ExpectedKeyboardReport::Timestamp() const {
-  return timestamp_;
-}
-
-const std::string & ExpectedKeyboardReport::Message() const {
-  return failure_message_;
-}
+struct Cycles {
+  uint32_t value;
+};
 
 }  // namespace testing
 }  // namespace kaleidoscope

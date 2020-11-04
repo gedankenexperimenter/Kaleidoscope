@@ -32,8 +32,32 @@ std::unique_ptr<State> VirtualDeviceTest::RunCycle() {
 }
 
 // =============================================================================
+void VirtualDeviceTest::Run(Cycles n) {
+  sim_.RunCycles(n.value);
+}
+
+void VirtualDeviceTest::Run(Millis t) {
+  sim_.RunForMillis(t.value);
+}
+
+void VirtualDeviceTest::RunUntil(Millis end) {
+  uint32_t t0 = Runtime.millisAtCycleStart();
+  Run(Millis{end.value - t0});
+}
+
+void VirtualDeviceTest::RunFrom(Millis start, Millis t) {
+  RunUntil(Millis{start.value + t.value});
+}
+
+// =============================================================================
 void VirtualDeviceTest::LoadState() {
   output_state_ = State::Snapshot();
+}
+
+void VirtualDeviceTest::ClearState() {
+  output_state_ = nullptr;
+  input_timestamps_.clear();
+  expected_reports_.clear();
 }
 
 const HIDState* VirtualDeviceTest::HIDReports() const {
@@ -41,23 +65,24 @@ const HIDState* VirtualDeviceTest::HIDReports() const {
   return output_state_->HIDReports();
 }
 
-uint32_t VirtualDeviceTest::ReportTimestamp(size_t index) const {
-  return output_state_->HIDReports()->Keyboard(index).Timestamp();
+Millis VirtualDeviceTest::ReportTimestamp(size_t index) const {
+  uint32_t t = output_state_->HIDReports()->Keyboard(index).Timestamp();
+  return Millis{t};
 }
 
 // -----------------------------------------------------------------------------
-uint32_t VirtualDeviceTest::EventTimestamp(size_t index) const {
-  return input_timestamps_[index];
+Millis VirtualDeviceTest::EventTimestamp(size_t index) const {
+  return Millis{input_timestamps_[index]};
 }
 
 // =============================================================================
 void VirtualDeviceTest::PressKey(KeyAddr addr) {
   sim_.Press(addr);
-  input_timestamps_.push_back(Runtime.millisAtCycleStart());
+  input_timestamps_.push_back(Millis{Runtime.millisAtCycleStart()});
 }
 void VirtualDeviceTest::ReleaseKey(KeyAddr addr) {
   sim_.Release(addr);
-  input_timestamps_.push_back(Runtime.millisAtCycleStart());
+  input_timestamps_.push_back(Millis{Runtime.millisAtCycleStart()});
 }
 
 // -----------------------------------------------------------------------------
@@ -84,7 +109,7 @@ void VirtualDeviceTest::ReleaseKey(Millis t, KeyAddr addr) {
 void VirtualDeviceTest::ExpectReport(AddKeycodes added_keys,
                                      RemoveKeycodes removed_keys,
                                      std::string description) {
-  uint32_t report_timestamp = Runtime.millisAtCycleStart();
+  Millis report_timestamp{Runtime.millisAtCycleStart()};
   for (Key key : added_keys) {
     AddToReport(key);
   }

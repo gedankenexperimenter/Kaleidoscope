@@ -21,23 +21,25 @@
 #include <set>
 #include <string>
 
+#include "testing/Millis.h"
+
 namespace kaleidoscope {
 namespace testing {
 
 class ExpectedKeyboardReport {
  public:
-  ExpectedKeyboardReport(uint32_t timestamp,
+  ExpectedKeyboardReport(Millis timestamp,
                          const std::set<uint8_t> & keycodes,
                          std::string message = "");
 
   const std::set<uint8_t> & Keycodes() const;
 
-  uint32_t Timestamp() const;
+  Millis Timestamp() const;
 
   const std::string & Message() const;
 
  private:
-  uint32_t timestamp_;
+  Millis timestamp_;
   std::set<uint8_t> keycodes_;
   std::string failure_message_;
 };
